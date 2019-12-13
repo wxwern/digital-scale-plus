@@ -1,0 +1,7 @@
+*.log
+*.class
+*.o
+
+#cache files
+.DS_Store
+desktop.ini
