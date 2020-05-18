@@ -22,16 +22,16 @@
         * {
             font-family: sans-serif, Helvetica, Arial;
             -webkit-user-select: none;
+            -webkit-text-size-adjust: 100%;
         }
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             overflow: hidden;
-            background: #000000;
         }
         #view {
-            background: #FFFFFF;
+            background: #FFF;
             height: 100%;
             width: 100%;
         }
@@ -95,16 +95,8 @@
             color: #777;
         }
         #orientationWarning {
-            font-size: 15px;
+            transform: translate(-50%, -60%);
             display: none;
-        }
-        @media screen and (orientation: landscape) and (max-height: 512px) {
-            #message {
-                display: none;
-            }
-            #orientationWarning {
-                display: block;
-            }
         }
         #footer {
             width: 100%;
@@ -156,6 +148,9 @@
             color: white;
         }
         @media screen and (prefers-color-scheme: dark) {
+            html, body {
+                background: black;
+            }
             #view {
                 background: #000;
             }
@@ -178,9 +173,20 @@
                 color: #09F;
             }
         }
+        @media screen and (orientation: landscape) and (max-height: 512px) {
+            html, body {
+                background: black; /* hack to hide display cutout on iPhone X, XS when in landscape mode */
+            }
+            #message {
+                display: none;
+            }
+            #orientationWarning {
+                display: block;
+            }
+        }
         </style>
     </head>
-    <body style="background: #000;"> 
+    <body> 
         <div id="view">
             <div id="navigationBar">
                 <div id="title"><b>Digital Scale+</b></div>
@@ -205,10 +211,11 @@
                     Sensitivity, set it in this app's settings.
                 </div>
                 <div id="orientationWarning">
-                    This app uses 3D touch to function.
+                    Place something conductive on the center<br>
+                    of the screen to measure its weight.
                     <br><br>
-                    Please rotate your phone to<br>
-                    portrait to view instructions.
+                    Please rotate your phone to portrait<br>
+                    to view detailed instructions.
                 </div>
             </div>
 
