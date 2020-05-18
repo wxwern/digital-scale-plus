@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<!-- LICENSE: https://github.com/wernjie/digital-scale-plus/blob/master/LICENSE -->
 <html lang="en">
     <head>
     	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-57211579-1"></script>
@@ -26,14 +28,20 @@
             padding: 0;
             height: 100%;
             overflow: hidden;
+            background: #000000;
+        }
+        #view {
+            background: #FFFFFF;
+            height: 100%;
+            width: 100%;
         }
         #navigationBar {
             width: 100%;
             height: 56px;
             margin: 0 auto;
             position: absolute;
-            background-color: #3876ED;
-        }
+            background: #3876ED;
+        }  
         #title {
             width: 100%;
             height: 25px;
@@ -49,13 +57,6 @@
             top: 12px;
             right: 8px;
             text-align: center;
-        }
-        #bottomBar {
-            width: 100%;
-            height: 80px;
-            background: #3876ED;
-            position: absolute;
-            bottom: 0px;
         }
         #weightLabel {
             width: 100%;
@@ -82,7 +83,7 @@
             border-radius: 20px;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
         }
-        #message {
+        #message, #orientationWarning {
             width: 100%;
             height: auto;
             text-align: center;
@@ -93,6 +94,18 @@
             font-size: 12px;
             color: #777;
         }
+        #orientationWarning {
+            font-size: 15px;
+            display: none;
+        }
+        @media screen and (orientation: landscape) and (max-height: 512px) {
+            #message {
+                display: none;
+            }
+            #orientationWarning {
+                display: block;
+            }
+        }
         #footer {
             width: 100%;
             text-align: center;
@@ -102,7 +115,7 @@
             color: #777;
         }
         #footer a {
-            color: #057;
+            color: #07F;
         }
         #controls {
             width: 100%;
@@ -142,9 +155,32 @@
         a, a:hover, a:active, a:visited {
             color: white;
         }
+        @media screen and (prefers-color-scheme: dark) {
+            #view {
+                background: #000;
+            }
+            #navigationBar {
+                background: #000;
+            }
+            #weightMeasurementArea {
+                background: #222;
+            }
+            #message, #orientationWarning {
+                color: #BBB;
+            }
+            #weightLabel {
+                background: #000;
+            }
+            #controls {
+                background: #000;
+            }
+            #footer a {
+                color: #09F;
+            }
+        }
         </style>
     </head>
-    <body> 
+    <body style="background: #000;"> 
         <div id="view">
             <div id="navigationBar">
                 <div id="title"><b>Digital Scale+</b></div>
@@ -156,8 +192,8 @@
                 <div id="message">
                     This app uses 3D touch to function.
                     <br><br>
-                    Place something conductive on screen<br>
-                    to measure its weight.
+                    Place something conductive on the center<br>
+                    of the screen to measure its weight.
                     <br><br>
                     If it is not conductive, place a spoon, set<br>
                     spoon as the tare weight, then place the<br>
@@ -167,6 +203,12 @@
                     <br><br>
                     If you have changed your device's 3D Touch<br>
                     Sensitivity, set it in this app's settings.
+                </div>
+                <div id="orientationWarning">
+                    This app uses 3D touch to function.
+                    <br><br>
+                    Please rotate your phone to<br>
+                    portrait to view instructions.
                 </div>
             </div>
 
@@ -388,27 +430,25 @@
         window.onload = function() {
             
             var iOS = ['iPad', 'iPhone', 'iPod', 'iPhone Simulator'].indexOf(navigator.platform) >= 0;
-            if (iOS == false) {
+            if (!iOS) {
                 window.alert("Sorry, but this application requires iOS.");
-		weightLabel.innerText = "iOS Only";	
-                return;
-            }
-            function iOSversion() {
-                if (/iP(hone|od|ad)/.test(navigator.platform)) {
-                     var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
-                     return [parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)];
+		        weightLabel.innerText = "iOS Only";	
+            } else {
+                function iOSversion() {
+                    if (/iP(hone|od|ad)/.test(navigator.platform)) {
+                        var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);
+                        return [parseInt(v[1], 10), parseInt(v[2], 10), parseInt(v[3] || 0, 10)];
+                    }
+                }
+
+
+                if (iOSversion()[0] >= 12.0) {
+                    //document.getElementsByTagName("head").innerHTML += '<meta name="apple-mobile-web-app-capable" content="yes">'
+                    addToHomescreen();
+                } else {
+                    window.alert("Note: This web app works best on iOS 12 and later. You are using iOS " + iOSversion()[0] + ". Please update your device for the best performance and to avoid any issues.");
                 }
             }
-
-
-            if (iOSversion()[0] >= 12.0) {
-                //document.getElementsByTagName("head").innerHTML += '<meta name="apple-mobile-web-app-capable" content="yes">'
-                addToHomescreen();
-            } else {
-                window.alert("Note: This web app works best on iOS 12 and later. You are using iOS " + iOSversion()[0] + ". Please update your device for the best performance and to avoid any issues.");
-            }
-
-            
 
             Sensitivity3dSelector.selectedIndex = selected3DTSettingIndex;
             WeightUnitSelector.selectedIndex = weightUnitIndex;
@@ -422,8 +462,8 @@
             document.getElementById('setting').onclick = function() {
                 settingPressed();
             }
-            
-            updateForce();
+
+            if (iOS) updateForce();
         }
         
             </script>
